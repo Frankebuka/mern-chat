@@ -1,6 +1,5 @@
 import express from "express";
 import dotenv from "dotenv";
-// import { chats } from "./data/data.js";
 import connectDB from "./config/db.js";
 import colors from "colors";
 import userRoutes from "./routes/userRoutes.js";
@@ -16,6 +15,16 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/user", userRoutes);
+
+app.use((err, req, res, next) => {
+  const statusCode = err.status || 500;
+  const message = err.message || "Internal Server Error";
+  return res.status(statusCode).json({
+    success: false,
+    statusCode,
+    message,
+  });
+});
 
 const PORT = process.env.PORT || 3000;
 
