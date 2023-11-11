@@ -1,24 +1,21 @@
 import express from "express";
 import dotenv from "dotenv";
-import { chats } from "./data/data.js";
+// import { chats } from "./data/data.js";
 import connectDB from "./config/db.js";
 import colors from "colors";
+import userRoutes from "./routes/userRoutes.js";
 
 dotenv.config();
 connectDB();
 const app = express();
 
-app.use(express.json());
+app.use(express.json()); // to accept json data in the body
 
-app.get("/api/chat", (req, res) => {
-  res.send(chats);
+app.get("/", (req, res) => {
+  res.send("API is running successfully");
 });
 
-app.get("/api/chat/:id", (req, res) => {
-  // console.log(req.params.id);
-  const chat = chats.find((c) => c._id === req.params.id);
-  res.send(chat);
-});
+app.use("/api/user", userRoutes);
 
 const PORT = process.env.PORT || 3000;
 
