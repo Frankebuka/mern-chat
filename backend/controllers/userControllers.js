@@ -1,6 +1,5 @@
 import asyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
-import generateToken from "../config/generateToken.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { errorHandler } from "../middleware/errorMiddleware.js";
@@ -30,14 +29,17 @@ const registerUser = asyncHandler(async (req, res, next) => {
       pic,
     });
 
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "30d",
+    });
+
+    const { password: pass, ...rest } = user._doc;
+
     if (user)
-      return res.status(201).json({
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        pic: user.pic,
-        token: generateToken(user._id),
-      });
+      return res
+        .cookie("access_token", token, { httpOnly: true })
+        .status(201)
+        .json(rest);
   } catch (error) {
     next(error);
   }

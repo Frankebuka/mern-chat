@@ -1,18 +1,10 @@
 import React, { useState } from "react";
-// import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-// import app from "../firebase/Config";
-// import {
-//   setDoc,
-//   doc,
-//   getFirestore,
-//   Timestamp,
-//   collection,
-//   addDoc,
-// } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 const Register = () => {
-  const [data, setData] = useState({
+  const [datas, setDatas] = useState({
     name: "",
     email: "",
     password: "",
@@ -22,49 +14,60 @@ const Register = () => {
 
   const navigate = useNavigate();
 
-  const { name, email, password, error, loading } = data;
-  // const auth = getAuth(app);
-  // const db = getFirestore(app);
+  const { name, email, password, error, loading } = datas;
 
   const handleChange = (e) => {
-    setData({ ...data, [e.target.name]: e.target.value });
+    setDatas({ ...datas, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setData({ ...data, error: null, loading: true });
+    setDatas({ ...datas, error: null, loading: true });
+
     if (!name || !email || !password) {
-      setData({ ...data, error: "All fields are required" });
+      setDatas({ ...datas, loading: false, error: "All fields are required" });
+      toast.warning("All fields are required");
     }
-    // try {
-    //   const result = await createUserWithEmailAndPassword(
-    //     auth,
-    //     email,
-    //     password
-    //   );
-    //   await setDoc(doc(db, "users", result.user.uid), {
-    //     id: result.user.uid,
-    //     name,
-    //     email,
-    //     createdAt: Timestamp.fromDate(new Date()),
-    //     isOnline: true,
-    //   });
-    //   setData({
-    //     name: "",
-    //     email: "",
-    //     password: "",
-    //     error: null,
-    //     loading: false,
-    //   });
-    //   navigate("/", { replace: true });
-    //   //       // ...
-    // } catch (error) {
-    //   setData({ ...data, error: error.message, loading: false });
-    //   const errorCode = error.code;
-    //   const errorMessage = error.message;
-    //   console.error("Error adding document: ", e);
-    //   // ..
-    // }
+
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+      const { data } = await axios.post(
+        "/api/user",
+        { name, email, password },
+        config
+      );
+
+      localStorage.setItem("userInfo", JSON.stringify(data));
+
+      setDatas({
+        name: "",
+        email: "",
+        password: "",
+        error: null,
+        loading: false,
+      });
+
+      toast("Registration successful", {
+        type: "success",
+      });
+
+      navigate("/", { replace: true });
+    } catch (error) {
+      setDatas({
+        ...datas,
+        error: error.response.data.message,
+        loading: false,
+      });
+      toast("Registration failed", { type: "error" });
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.error("Error registering: ", error);
+      console.log(errorCode, errorMessage);
+    }
   };
 
   return (
