@@ -13,6 +13,7 @@ import path from "path";
 dotenv.config();
 connectDB();
 const app = express();
+const __dirname = path.resolve();
 
 app.use(express.json()); // to accept json data in the body
 
@@ -23,6 +24,20 @@ app.use("/api/chat", chatRoutes);
 app.use("/api/message", messageRoutes);
 app.use("/api/notification", notificationRoutes);
 
+app.use(express.static(path.join(__dirname, "/frontend/dist")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "frontend", "dist", "index.html"));
+});
+
+app.get("*", (req, res) => {
+  res.sendFile(
+    app.get("*", (req, res) => {
+      res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
+    })
+  );
+});
+
 app.use((err, req, res, next) => {
   const statusCode = err.status || 500;
   const message = err.message || "Internal Server Error";
@@ -32,27 +47,6 @@ app.use((err, req, res, next) => {
     message,
   });
 });
-
-// ----------------------------Deployment--------------------------
-
-const __dirname = path.resolve();
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "/frontend/dist")));
-
-  app.get("*", (req, res) => {
-    res.sendFile(
-      app.get("*", (req, res) => {
-        res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
-      })
-    );
-  });
-} else {
-  app.get("/", (req, res) => {
-    res.send("API is running successfully!");
-  });
-}
-
-// ----------------------------Deployment--------------------------
 
 const PORT = process.env.PORT || 3000;
 
