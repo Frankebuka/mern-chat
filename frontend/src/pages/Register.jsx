@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 
 const Register = () => {
+  const [showPassword, setShowPassword] = useState(false);
   const [datas, setDatas] = useState({
     name: "",
     email: "",
@@ -15,6 +17,14 @@ const Register = () => {
   const navigate = useNavigate();
 
   const { name, email, password, error, loading } = datas;
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("userInfo"));
+
+    if (user) {
+      navigate("/", { replace: true });
+    }
+  }, [navigate]);
 
   const handleChange = (e) => {
     setDatas({ ...datas, [e.target.name]: e.target.value });
@@ -100,12 +110,23 @@ const Register = () => {
           <div className="input_container">
             <label htmlFor="password">Password</label>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               name="password"
               value={password}
               onChange={handleChange}
               required
             />
+            {showPassword ? (
+              <AiFillEyeInvisible
+                className="show_password"
+                onClick={() => setShowPassword((prevState) => !prevState)}
+              />
+            ) : (
+              <AiFillEye
+                className="show_password"
+                onClick={() => setShowPassword((prevState) => !prevState)}
+              />
+            )}
           </div>
           {error ? <p className="error">{error}</p> : null}
           <div className="btn_container">
