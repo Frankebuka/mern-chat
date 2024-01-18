@@ -35,12 +35,16 @@ app.use((err, req, res, next) => {
 
 // ----------------------------Deployment--------------------------
 
-const __dirname1 = path.resolve();
+const __dirname = path.resolve();
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname1, "/frontend/build")));
+  app.use(express.static(path.join(__dirname, "/frontend/dist")));
 
   app.get("*", (req, res) => {
-    res.sendFile();
+    res.sendFile(
+      app.get("*", (req, res) => {
+        res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
+      })
+    );
   });
 } else {
   app.get("/", (req, res) => {
