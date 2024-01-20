@@ -568,7 +568,7 @@ section .form {
   position: absolute;
   top: 100%;
   right: 0;
-  width: 270px;
+  width: 300px;
   max-height: 500px;
   padding: 20px;
   background-color: #ffffff0c;
@@ -605,6 +605,51 @@ section .form {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow-y: auto;
+}
+
+.message-card {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 3px solid var(--color-6);
+  cursor: pointer;
+}
+
+.message-icon {
+  flex-shrink: 0;
+  margin-right: 10px;
+  width: 35px;
+  height: 35px;
+  border-radius: 35px;
+  border: 1px solid var(--color-4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notif-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sender-name {
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.notif-message {
+  margin-right: 100px;
+  white-space: nowrap;
+  width: 30%;
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.notif-date {
+  font-size: 12px;
+  color: var(--color-4);
 }
 
 /* ::-webkit-scrollbar {
