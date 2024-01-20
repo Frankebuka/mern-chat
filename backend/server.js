@@ -57,7 +57,7 @@ const server = app.listen(PORT, () => {
 const io = new Server(server, {
   pingTimeout: 60000,
   cors: {
-    origin: "http://127.0.0.1:5173",
+    origin: "https://mern-chat-gjkb.onrender.com",
   },
 });
 
