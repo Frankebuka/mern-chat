@@ -48,6 +48,7 @@ const Home = () => {
     setSelectedChat,
     chats,
     setChats,
+    notification,
     setNotification,
     fetchAgain,
     setFetchAgain,
@@ -138,7 +139,6 @@ const Home = () => {
         },
       };
       const { data } = await axios.get("/api/notification", config);
-
       setNotification(data);
     } catch (error) {
       console.error(error.response.data);

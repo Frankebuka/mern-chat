@@ -8,6 +8,9 @@ import axios from "axios";
 import GroupChatModal from "../miscellaneous/GroupChatModal";
 import { useState } from "react";
 import { getSenderName } from "../config/ChatLogics";
+import { TiMessages, TiMessage } from "react-icons/ti";
+// import { TiMessage } from "react-icons/ti";
+import moment from "moment";
 
 const Navbar = () => {
   const [openNotification, setOpenNotification] = useState(false);
@@ -48,6 +51,7 @@ const Navbar = () => {
   };
 
   const removeSelectedChat = async (notif) => {
+    console.log(notif);
     try {
       const config = {
         headers: {
@@ -123,23 +127,60 @@ const Navbar = () => {
                   <div className="notification-card">
                     {!notification.length && "No New Messages"}
                     {notification &&
-                      notification.map((notif) => (
-                        <div
-                          style={{ cursor: "pointer" }}
-                          key={notif._id}
-                          onClick={() => {
-                            setSelectedChat(notif.chat);
-                            removeSelectedChat(notif);
-                            setOpenNotification(false);
-                          }}
-                        >
-                          {notif.chat.isGroupChat
-                            ? `New Message in ${notif.chat.chatName}`
-                            : `New Message from
-                              ${getSenderName(user, notif.chat.users)}`}
-                          <br />
-                        </div>
-                      ))}
+                      notification
+                        .slice()
+                        .reverse()
+                        .map((notif) => (
+                          <div
+                            style={{ cursor: "pointer" }}
+                            key={notif._id}
+                            onClick={() => {
+                              setSelectedChat(notif.chat);
+                              removeSelectedChat(notif);
+                              setOpenNotification(false);
+                            }}
+                          >
+                            {notif.chat.isGroupChat ? (
+                              <div className="message-card">
+                                <div className="message-icon">
+                                  <TiMessages />
+                                </div>
+                                <div>
+                                  <div className="sender-name">
+                                    {notif.chat.chatName}
+                                  </div>
+                                  <div className="notif-wrapper">
+                                    <small className="notif-message">
+                                      {notif.content}
+                                    </small>
+                                    <small className="notif-date">
+                                      {moment(notif.createdAt).fromNow()}
+                                    </small>
+                                  </div>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="message-card">
+                                <div className="message-icon">
+                                  <TiMessage />
+                                </div>
+                                <div>
+                                  <div className="sender-name">
+                                    {getSenderName(user, notif.chat.users)}
+                                  </div>
+                                  <div className="notif-wrapper">
+                                    <small className="notif-message">
+                                      {notif.content}
+                                    </small>
+                                    <small className="notif-date">
+                                      {moment(notif.createdAt).fromNow()}
+                                    </small>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        ))}
                   </div>
                 </>
               )}
