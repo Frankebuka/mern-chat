@@ -7,6 +7,7 @@ import User from "../components/User";
 import UserListItem from "../components/UserAvatar/UserListItem";
 import UserBadgeItem from "../components/UserAvatar/UserBadgeItem";
 import { IoMdClose } from "react-icons/io";
+import Tooltip from "../components/Tooltip";
 
 function GroupChatModal({ children }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -102,7 +103,7 @@ function GroupChatModal({ children }) {
   };
 
   return (
-    <div>
+    <Tooltip text={"Click to start a group chat"}>
       <span onClick={toggleModal} className="open-modal-button">
         {children}
       </span>
@@ -181,7 +182,7 @@ function GroupChatModal({ children }) {
           </div>
         </div>
       )}
-    </div>
+    </Tooltip>
   );
 }
 
