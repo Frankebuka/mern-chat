@@ -170,7 +170,7 @@ const Navbar = () => {
                                   </div>
                                   <div className="notif-wrapper">
                                     <small className="notif-message">
-                                      {notif.content}
+                                      {notif.content || (notif.pic && "photo")}
                                     </small>
                                     <small className="notif-date">
                                       {moment(notif.createdAt).fromNow()}
